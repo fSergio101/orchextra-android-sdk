@@ -20,6 +20,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.neenbedankt.android-apt'
 apply from: rootProject.file('gradle/checkstyle.gradle')
 apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 def STRING = "String"
 def BOOLEAN = "boolean"
@@ -94,9 +95,9 @@ android {
 }
 
 dependencies {
-  compile fileTree(dir: 'libs/', include: ['*.jar'])
+//  compile fileTree(dir: 'libs/', include: ['*.jar'])
   apt parent.ext.dependencies.daggerCompiler
-//  compile parent.ext.dependencies.dagger
+  shadow parent.ext.dependencies.dagger
 
   provided parent.ext.dependencies.javaXannotations
   compile parent.ext.dependencies.retrofit
@@ -144,4 +145,17 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 artifacts {
   archives sourcesJar
   archives javadocJar
+}
+
+configurations {
+  shadow
+  compile.extendsFrom provided
+  provided.extendsFrom shadow
+}
+
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
+task fatJar(type: ShadowJar) {
+  configurations = [project.configurations.shadow]
+  from(android.sourceSets.main.java.srcDirs)
 }
