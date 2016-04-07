@@ -20,7 +20,6 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.neenbedankt.android-apt'
 apply from: rootProject.file('gradle/checkstyle.gradle')
 apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.github.johnrengelman.shadow'
 
 def STRING = "String"
 def BOOLEAN = "boolean"
@@ -94,10 +93,23 @@ android {
 
 }
 
+// create separate scope for jarjar
+configurations {
+  jarjar
+}
+
 dependencies {
 //  compile fileTree(dir: 'libs/', include: ['*.jar'])
-  apt parent.ext.dependencies.daggerCompiler
-  shadow parent.ext.dependencies.dagger
+//  apt parent.ext.dependencies.daggerCompiler
+
+  jarjar files('libs/jarjar-1.4.jar')
+
+  provided files('libs/dagger-2.2.jar')
+  provided files('libs/guava-19.0.jar')
+  // TODO: the following 2 dagger deps are required at compile time only
+  // and should be taken from maven repo once dagger 2.1 is released
+  provided files('libs/dagger-compiler-2.2.jar')
+  provided files('libs/dagger-producers-2.2.jar')
 
   provided parent.ext.dependencies.javaXannotations
   compile parent.ext.dependencies.retrofit
@@ -112,6 +124,7 @@ dependencies {
   compile parent.ext.dependencies.playServicesGcm
 
   compile parent.ext.dependencies.barcodescanner
+  compile files('lib/daggerOrchextra.jar')
 
   compile project(':orchextrasdk-control')
   compile project(':orchextrasdk-data')
@@ -121,6 +134,19 @@ dependencies {
 
   testCompile parent.ext.testDependencies.junit
   testCompile parent.ext.testDependencies.mockito
+
+}
+
+task applyPatch << {
+    project.ant {
+      taskdef name: "jarjar", classname: "com.tonicsystems.jarjar.JarJarTask", classpath: configurations.jarjar.asPath
+      jarjar(jarfile: 'libs/daggerOrchextra.jar', filesetmanifest: "merge") {
+        zipfileset(src: 'libs/dagger-2.2.jar')
+        zipfileset(src: 'libs/guava-19.0.jar')
+        rule pattern: "dagger.**", result: "ox.dagger.@1"
+        rule pattern: "com.google.common.**", result: "ox.core.deps.guava.@1"
+      }
+    }
 }
 
 // build a jar with source files
@@ -145,17 +171,4 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 artifacts {
   archives sourcesJar
   archives javadocJar
-}
-
-configurations {
-  shadow
-  compile.extendsFrom provided
-  provided.extendsFrom shadow
-}
-
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
-task fatJar(type: ShadowJar) {
-  configurations = [project.configurations.shadow]
-  from(android.sourceSets.main.java.srcDirs)
 }
