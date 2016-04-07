@@ -1,0 +1,2 @@
+rule dagger.** ox.dagger.@1
+rule com.google.common.** ox.core.deps.guava.@1
