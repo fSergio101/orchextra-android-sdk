@@ -20,6 +20,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.neenbedankt.android-apt'
 apply from: rootProject.file('gradle/checkstyle.gradle')
 apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'net.vrallev.jarjar'
 
 def STRING = "String"
 def BOOLEAN = "boolean"
@@ -94,22 +95,54 @@ android {
 }
 
 // create separate scope for jarjar
-configurations {
-  jarjar
+//configurations {
+//  jarjar
+//}
+
+jarjar {
+  // required, path to the executable .jar file
+  jarJarFile 'libs/jarjar-1.4.jar'
+
+  // optional, the rules for the jarjar tool
+  rules = [
+      'rule dagger.** ox.dagger.@1',
+      'rule com.google.common.** ox.core.deps.guava.@1'
+  ]
+
+  // optional, exclude files from the dependency .jar files
+    srcExcludes = ['META-INF/**']
+
+  // optional, default is build_repackaged.jar, the result .jar file name
+  outputName 'daggerOrchextra.jar'
+
+  // optional, default is libs, the directory of the result .jar
+  outputDir 'libs'
+
+  // optional, default is false
+  ignoreJarJarResult false
 }
 
 dependencies {
 //  compile fileTree(dir: 'libs/', include: ['*.jar'])
 //  apt parent.ext.dependencies.daggerCompiler
 
-  jarjar files('libs/jarjar-1.4.jar')
+//  jarjar files('libs/jarjar-1.4.jar')
 
   provided files('libs/dagger-2.2.jar')
   provided files('libs/guava-19.0.jar')
-  // TODO: the following 2 dagger deps are required at compile time only
-  // and should be taken from maven repo once dagger 2.1 is released
+//  // TODO: the following 2 dagger deps are required at compile time only
+//  // and should be taken from maven repo once dagger 2.1 is released
   provided files('libs/dagger-compiler-2.2.jar')
   provided files('libs/dagger-producers-2.2.jar')
+
+//  jarjar files('libs/jarjar-1.4.jar')
+
+  jarjar files('libs/dagger-2.2.jar')
+  jarjar files('libs/guava-19.0.jar')
+  // TODO: the following 2 dagger deps are required at compile time only
+  // and should be taken from maven repo once dagger 2.1 is released
+  jarjar files('libs/dagger-compiler-2.2.jar')
+  jarjar files('libs/dagger-producers-2.2.jar')
 
   provided parent.ext.dependencies.javaXannotations
   compile parent.ext.dependencies.retrofit
@@ -137,17 +170,18 @@ dependencies {
 
 }
 
-task applyPatch << {
-    project.ant {
-      taskdef name: "jarjar", classname: "com.tonicsystems.jarjar.JarJarTask", classpath: configurations.jarjar.asPath
-      jarjar(jarfile: 'libs/daggerOrchextra.jar', filesetmanifest: "merge") {
-        zipfileset(src: 'libs/dagger-2.2.jar')
-        zipfileset(src: 'libs/guava-19.0.jar')
-        rule pattern: "dagger.**", result: "ox.dagger.@1"
-        rule pattern: "com.google.common.**", result: "ox.core.deps.guava.@1"
-      }
-    }
-}
+//task applyPatch << {
+//    project.ant {
+//      taskdef name: "jarjar", classname: "com.tonicsystems.jarjar.JarJarTask", classpath: configurations.jarjar.asPath
+//      jarjar(jarfile: 'libs/daggerOrchextra.jar', filesetmanifest: "merge") {
+//        zipfileset(src: 'libs/dagger-2.2.jar')
+//        zipfileset(src: 'libs/guava-19.0.jar')
+//        rule pattern: "dagger.**", result: "ox.dagger.@1"
+//        rule pattern: "com.google.common.**", result: "ox.core.deps.guava.@1"
+//      }
+//    }
+//}
+
 
 // build a jar with source files
 task sourcesJar(type: Jar) {
