@@ -124,7 +124,7 @@ dependencies {
   compile parent.ext.dependencies.playServicesGcm
 
   compile parent.ext.dependencies.barcodescanner
-  compile files('lib/daggerOrchextra.jar')
+  compile files('libs/daggerOrchextra.jar')
 
   compile project(':orchextrasdk-control')
   compile project(':orchextrasdk-data')
