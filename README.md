@@ -2,6 +2,7 @@
 ![Language](https://img.shields.io/badge/Language-Android-brightgreen.svg)
 ![Version](https://img.shields.io/badge/Version-2.0.0-blue.svg)
 
+
 A library that gives you access to Orchextra platform from your Android app.
 
 ## Getting started
