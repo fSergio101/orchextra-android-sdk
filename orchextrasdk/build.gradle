@@ -108,6 +108,7 @@ dependencies {
 
   provided files('libs/dagger-2.2.jar')
   provided files('libs/guava-19.0.jar')
+  provided files('libs/google-play-services.jar')
 
   apt parent.ext.dependencies.daggerCompiler
 
@@ -122,8 +123,8 @@ dependencies {
   compile parent.ext.dependencies.altBeacon
   apt parent.ext.dependencies.threaddecoratedviewcompiler
 
-  compile parent.ext.dependencies.playServicesLocation
-  compile parent.ext.dependencies.playServicesGcm
+//  compile parent.ext.dependencies.playServicesLocation
+//  compile parent.ext.dependencies.playServicesGcm
 
   compile parent.ext.dependencies.barcodescanner
 
@@ -138,7 +139,7 @@ dependencies {
 
 }
 
-ext.jarjarDeps = ["libs/guava-19.0.jar", "libs/dagger-2.2.jar"] as Set
+ext.jarjarDeps = ["libs/guava-19.0.jar", "libs/dagger-2.2.jar", "libs/google-play-services.jar"] as Set
 ext.jarjarRulesFile = file('jarjar-rules.txt')
 //apply from: 'androidJar.gradle'
 apply from: 'jarjar.gradle' // TODO run this through pro-guard first!
