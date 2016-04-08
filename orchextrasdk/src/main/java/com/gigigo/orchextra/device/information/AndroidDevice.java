@@ -39,7 +39,7 @@ public class AndroidDevice {
 
         device.setHandset(DeviceInfoProvider.getHandset());
         device.setOsVersion(DeviceInfoProvider.getOsVersion());
-        device.setInstanceId(DeviceInfoProvider.getAndroidInstanceId(context));
+        device.setInstanceId("HEy_My_ID");
         device.setSecureId(DeviceInfoProvider.getAndroidSecureId(context));
         device.setSerialNumber(DeviceInfoProvider.getAndroidSerialNumber());
         device.setBluetoothMacAddress(DeviceInfoProvider.getBluetoothMac());

@@ -115,6 +115,8 @@ dependencies {
   jarjar files('jarjar-1.4.jar')
 
   provided parent.ext.dependencies.javaXannotations
+  compile 'com.google.android.gms:play-services-gcm:8.4.0'
+
   compile parent.ext.dependencies.retrofit
   compile parent.ext.dependencies.gsonConverter
   compile parent.ext.dependencies.loggingInterceptor
@@ -131,7 +133,10 @@ dependencies {
   compile project(':orchextrasdk-control')
   compile project(':orchextrasdk-data')
 
-  compile parent.ext.dependencies.gggLib
+  compile (parent.ext.dependencies.gggLib){
+    exclude group: 'com.google.android.gms'
+  }
+
   compile parent.ext.dependencies.gggLogger
 
   testCompile parent.ext.testDependencies.junit

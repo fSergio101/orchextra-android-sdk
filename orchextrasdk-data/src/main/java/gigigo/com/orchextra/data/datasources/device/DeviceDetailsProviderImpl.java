@@ -32,7 +32,8 @@ public class DeviceDetailsProviderImpl implements DeviceDetailsProvider {
   }
 
   @Override public String getAndroidInstanceId() {
-    return DeviceInfoProvider.getAndroidInstanceId(context);
+    return "HEYYY_THIS_IS_MY_ID";
+    //return DeviceInfoProvider.getAndroidInstanceId(context);
   }
 
   @Override public String getAndroidSecureId() {

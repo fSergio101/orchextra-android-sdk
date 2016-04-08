@@ -53,7 +53,9 @@ dependencies {
   compile parent.ext.dependencies.realm
 
   compile project(':orchextrasdk-dataprovision')
-  compile parent.ext.dependencies.gggLib
+  compile (parent.ext.dependencies.gggLib){
+    exclude group: 'com.google.android.gms'
+  }
 
   testCompile parent.ext.testDependencies.junit
   testCompile parent.ext.testDependencies.mockito
