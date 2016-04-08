@@ -1,2 +1,3 @@
 rule dagger.** ox.dagger.@1
 rule com.google.common.** ox.core.deps.guava.@1
+rule com.google.android.gms.** ox.com.google.android.gms.@1
